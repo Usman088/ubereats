@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
           createdAt: serverTimestamp(),
         });
 
-        window.location.href = "/thankyou.html";
+        window.location.href = "thankyou.html";
       } catch (err) {
         console.error(err);
         showError("Something went wrong");
