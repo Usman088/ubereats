@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -13,7 +13,8 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", "Cantarell", sans-serif;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         min-height: 100vh;
         display: flex;
@@ -21,7 +22,7 @@
         align-items: center;
         padding: 20px;
       }
-      .header-bar{
+      .header-bar {
         width: 100%;
         background-color: #000000;
         color: #fff;
@@ -61,14 +62,14 @@
       }
 
       .login-header h1 {
-        color: #0A2540;
+        color: #0a2540;
         font-size: 28px;
         font-weight: 600;
         margin-bottom: 8px;
       }
 
       .login-header p {
-        color: #6B7280;
+        color: #6b7280;
         font-size: 14px;
       }
 
@@ -78,7 +79,7 @@
 
       .form-group label {
         display: block;
-        color: #0A2540;
+        color: #0a2540;
         font-size: 14px;
         font-weight: 500;
         margin-bottom: 8px;
@@ -87,10 +88,10 @@
       .form-group input {
         width: 100%;
         padding: 12px 16px;
-        border: 2px solid #E5E7EB;
+        border: 2px solid #e5e7eb;
         border-radius: 8px;
         font-size: 15px;
-        color: #0A2540;
+        color: #0a2540;
         transition: all 0.3s ease;
         background: white;
       }
@@ -102,7 +103,7 @@
       }
 
       .form-group input::placeholder {
-        color: #9CA3AF;
+        color: #9ca3af;
       }
 
       .submit-btn {
@@ -130,14 +131,14 @@
       }
 
       .submit-btn:disabled {
-        background: #9CA3AF;
+        background: #9ca3af;
         cursor: not-allowed;
         transform: none;
       }
 
       .error-message {
-        background: #FEE2E2;
-        color: #991B1B;
+        background: #fee2e2;
+        color: #991b1b;
         padding: 12px;
         border-radius: 8px;
         font-size: 14px;
@@ -152,9 +153,16 @@
       }
 
       @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
       }
 
       .loading {
@@ -170,7 +178,9 @@
       }
 
       @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       @media (max-width: 480px) {
@@ -189,8 +199,7 @@
       <h1>Uber Eats</h1>
     </header>
     <div class="login-container">
-      <p>Test Test</p>
-      <!-- <div class="login-header">
+      <div class="login-header">
         <h1>Welcome Back</h1>
       </div>
 
@@ -222,7 +231,7 @@
         <button type="submit" class="submit-btn" id="submitBtn">
           Continue
         </button>
-      </form> -->
+      </form>
     </div>
 
     <script type="module" src="./script.js"></script>

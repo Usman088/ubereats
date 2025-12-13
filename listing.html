@@ -1,98 +1,161 @@
-        
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Users Listing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Users Listing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      padding: 20px;
-    }
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        padding: 20px;
+      }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,.1);
-    }
+      .container {
+        max-width: 950px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        position: relative;
+      }
 
-    h2 {
-      margin-bottom: 15px;
-    }
+      /* Back Button */
+      .back-btn {
+        padding: 8px 16px;
+        border: none;
+        background: #6c757d;
+        color: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        font-size: 14px;
+        transition: background 0.3s;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+      .back-btn:hover {
+        background: #5a6268;
+      }
 
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+      }
 
-    th {
-      background: #f1f1f1;
-    }
+      .search-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+      }
 
-    .pagination {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
+      .search-container input {
+        padding: 10px 14px;
+        width: 280px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s;
+      }
 
-    .pagination button {
-      padding: 8px 14px;
-      border: none;
-      background: #007bff;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+      .search-container input:focus {
+        border-color: #007bff;
+      }
 
-    .pagination button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        table-layout: auto;
+      }
 
-    .loading {
-      text-align: center;
-      padding: 20px;
-    }
-  </style>
-</head>
-<body>
+      th,
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+      }
 
-<div class="container">
-  <h2>Users Listing</h2>
+      th {
+        background-color: #f7f7f7;
+        font-weight: 600;
+        color: #555;
+      }
 
-  <div id="loading" class="loading">Loading users...</div>
+      tbody tr:hover {
+        background-color: #f1f9ff;
+        transition: background 0.2s;
+      }
 
-  <table id="usersTable" style="display:none;">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Email</th>
-        <th>Password</th>
-        <th>Created At</th>
-      </tr>
-    </thead>
-    <tbody id="usersBody"></tbody>
-  </table>
+      .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
 
-  <div class="pagination">
-    <button id="prevBtn" disabled>Previous</button>
-    <button id="nextBtn">Next</button>
-  </div>
-</div>
+      .pagination button {
+        padding: 8px 16px;
+        border: none;
+        background: #007bff;
+        color: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
 
-<script type="module" src="./script.js"></script>
-</body>
+      .pagination button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: #0056b3;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #555;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <a href="/index.html" id="backBtn" class="back-btn">&larr; Back</a>
+      </div>
+      <h2>Users Listing</h2>
+
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search by email..." />
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="loading">Loading users...</div>
+
+      <table id="usersTable" style="display: none">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button id="prevBtn" disabled>Previous</button>
+        <button id="nextBtn" disabled>Next</button>
+      </div>
+    </div>
+
+    <script type="module" src="./script.js"></script>
+  </body>
 </html>
