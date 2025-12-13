@@ -1,0 +1,98 @@
+        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Users Listing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f1f1;
+    }
+
+    .pagination {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .pagination button {
+      padding: 8px 14px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .pagination button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Users Listing</h2>
+
+  <div id="loading" class="loading">Loading users...</div>
+
+  <table id="usersTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody id="usersBody"></tbody>
+  </table>
+
+  <div class="pagination">
+    <button id="prevBtn" disabled>Previous</button>
+    <button id="nextBtn">Next</button>
+  </div>
+</div>
+
+<script type="module" src="./script.js"></script>
+</body>
+</html>
