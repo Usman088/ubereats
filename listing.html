@@ -9,20 +9,19 @@
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: #f0f2f5;
-        padding: 20px;
+        padding: 15px;
+        margin: 0;
       }
 
       .container {
-        max-width: 950px;
+        max-width: 100%;
         margin: auto;
         background: #fff;
-        padding: 30px;
+        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-        position: relative;
       }
 
-      /* Back Button */
       .back-btn {
         padding: 8px 16px;
         border: none;
@@ -32,16 +31,13 @@
         cursor: pointer;
         margin-bottom: 15px;
         font-size: 14px;
-        transition: background 0.3s;
-      }
-
-      .back-btn:hover {
-        background: #5a6268;
+        text-decoration: none;
+        display: inline-block;
       }
 
       h2 {
         text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         color: #333;
       }
 
@@ -53,23 +49,23 @@
 
       .search-container input {
         padding: 10px 14px;
-        width: 280px;
+        width: 100%;
+        max-width: 300px;
         border-radius: 6px;
         border: 1px solid #ccc;
         font-size: 14px;
         outline: none;
-        transition: border 0.2s;
       }
 
-      .search-container input:focus {
-        border-color: #007bff;
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
       }
 
       table {
         width: 100%;
+        min-width: 700px;
         border-collapse: collapse;
-        margin-top: 10px;
-        table-layout: auto;
       }
 
       th,
@@ -77,6 +73,11 @@
         padding: 12px 15px;
         border-bottom: 1px solid #e0e0e0;
         text-align: left;
+        white-space: nowrap;
+      }
+
+      td {
+        word-break: break-all;
       }
 
       th {
@@ -87,7 +88,6 @@
 
       tbody tr:hover {
         background-color: #f1f9ff;
-        transition: background 0.2s;
       }
 
       .pagination {
@@ -95,6 +95,7 @@
         display: flex;
         justify-content: center;
         gap: 10px;
+        flex-wrap: wrap;
       }
 
       .pagination button {
@@ -104,16 +105,11 @@
         color: #fff;
         border-radius: 6px;
         cursor: pointer;
-        transition: background 0.3s;
       }
 
       .pagination button:disabled {
         background: #aaa;
         cursor: not-allowed;
-      }
-
-      .pagination button:hover:not(:disabled) {
-        background: #0056b3;
       }
 
       .loading {
@@ -122,34 +118,44 @@
         color: #555;
         font-weight: 500;
       }
+
+      @media (max-width: 600px) {
+        .search-container {
+          justify-content: center;
+        }
+
+        h2 {
+          font-size: 20px;
+        }
+      }
     </style>
   </head>
+
   <body>
     <div class="container">
-      <div>
-        <a href="/" id="backBtn" class="back-btn">&larr; Back</a>
-      </div>
+      <a href="/" class="back-btn">&larr; Back</a>
+
       <h2>Users Listing</h2>
 
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search by email..." />
       </div>
 
-      <!-- Loading -->
       <div id="loading" class="loading">Loading users...</div>
 
-      <table id="usersTable" style="display: none">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Created At</th>
-          </tr>
-        </thead>
-        <tbody id="usersBody"></tbody>
-      </table>
+      <div class="table-responsive">
+        <table id="usersTable" style="display: none">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
 
-      <!-- Pagination -->
       <div class="pagination">
         <button id="prevBtn" disabled>Previous</button>
         <button id="nextBtn" disabled>Next</button>
